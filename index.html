@@ -286,7 +286,7 @@ ROWS.forEach(row => {
                         <div class="closure-info">
                             <b>${row.key}${p.suffix}</b>
                             <div class="closure-dates">${p.start} ➔ ${p.end}</div>
-                            <div class="closure-message">🔊 Prompt: ${p.msg || 'None'}</div>
+                            <div class="closure-message">🔊 ${p.msg || 'None'}</div>
                         </div>
                         <span class="badge ${isActive ? 'badge-active' : 'badge-scheduled'}">${isActive ? 'Active now' : 'Scheduled'}</span>
                     </div>`;
