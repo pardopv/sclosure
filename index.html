@@ -33,11 +33,8 @@
     /* Current Planning Style */
     .visual-container { margin-top: 0; }
     .filter-box { margin-bottom: 20px; background: #f8f9fa; padding: 10px; border-radius: 8px; border: 1px solid #eee; }
-    .closure-item { 
-        display: flex; justify-content: space-between; align-items: center;
-        padding: 8px 15px; background: #f8f9fa; border-radius: 6px; margin-bottom: 6px;
-        border-left: 4px solid #ccc;
-    }
+    .closure-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 15px; background: #f8f9fa; border-radius: 6px; margin-bottom: 6px; border-left: 4px solid #ccc; }
+    .closure-message { font-size: 0.75rem; color: #0B0B60; margin-top: 4px; font-style: italic; display: block; }
     .closure-item.active { border-left-color: #28a745; background: #e8f5e9; }
     .closure-item.upcoming { border-left-color: #0059ff; background: #e3f2fd; }
     .closure-info b { color: #0B0B60; font-size: 0.9rem; }
@@ -266,37 +263,38 @@ function updateVisual() {
     const now = new Date();
     let hasEntries = false;
 
-    ROWS.forEach(row => {
-        if (filterText && !row.key.toLowerCase().includes(filterText)) return;
-        const periods = [
-            { start: row.From_1, end: row.To_1, suffix: "" },
-            { start: row.From_2, end: row.To_2, suffix: " (Second message)" }
-        ];
-        periods.forEach(p => {
-            if (p.start && p.end) {
-                const startDate = parseDataTableDate(p.start);
-                const endDate = parseDataTableDate(p.end);
-                if (endDate && endDate >= now) {
-                    hasEntries = true;
-                    const isActive = (now >= startDate && now <= endDate);
-                    const statusClass = isActive ? "active" : "upcoming";
-                    const badgeClass = isActive ? "badge-now" : "badge-next";
-                    const statusLabel = isActive ? "Active Now" : "Scheduled";
-                    container.innerHTML += `
-                        <div class="closure-item ${statusClass}">
-                            <div class="closure-info">
-                                <b>${row.key}${p.suffix}</b>
-                                <div class="closure-dates">
-                                    From: ${p.start}<br>To: ${p.end}
-                                </div>
-                            </div>
-                            <span class="badge ${badgeClass}">${statusLabel}</span>
+ROWS.forEach(row => {
+    if (filterText && !row.key.toLowerCase().includes(filterText)) return;
+
+    // On ajoute le champ 'msg' dans l'objet de chaque période
+    const periods = [
+        { start: row.From_1, end: row.To_1, msg: row.Message_1, suffix: "" },
+        { start: row.From_2, end: row.To_2, msg: row.Message_2, suffix: " (Second message)" }
+    ];
+
+    periods.forEach(p => {
+        if (p.start && p.end) {
+            const startDate = parseDataTableDate(p.start);
+            const endDate = parseDataTableDate(p.end);
+
+            if (endDate && endDate >= now) {
+                hasEntries = true;
+                const isActive = (now >= startDate && now <= endDate);
+                
+                container.innerHTML += `
+                    <div class="closure-item ${isActive ? 'active' : 'upcoming'}">
+                        <div class="closure-info">
+                            <b>${row.key}${p.suffix}</b>
+                            <div class="closure-dates">${p.start} ➔ ${p.end}</div>
+                            <div class="closure-message">🔊 Prompt: ${p.msg || 'None'}</div>
                         </div>
-                    `;
-                }
+                        <span class="badge ${isActive ? 'badge-now' : 'badge-next'}">${isActive ? 'Now' : 'Next'}</span>
+                    </div>`;
             }
-        });
+        }
     });
+});
+    
     if (!hasEntries) {
         container.innerHTML = "<p style='color:gray'>No active or upcoming closures found.</p>";
     }
