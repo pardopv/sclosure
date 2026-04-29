@@ -372,19 +372,35 @@ document.getElementById("form").addEventListener("submit", async (e) => {
         return;
     }
 
-    const payload = {
-        key: row.key,
-        From_1: getReadableDateTime("from_date", "from_time"),
-        To_1: getReadableDateTime("to_date", "to_time"),
-        Message_1: document.getElementById("messageValue")?.value || ""
-    };
+    // KEEP EXISTING DATA IN SECTION 2 IF ENTRY IS BLANK ON SUBMIT WHILE UPDATING SECTION 1
+    
+    const payload = { ...row }; 
+
+    // Mandatory update of section 1 
+    payload.From_1 = getReadableDateTime("from_date", "from_time");
+    payload.To_1 = getReadableDateTime("to_date", "to_time");
+    payload.Message_1 = document.getElementById("messageValue")?.value || "";
 
     if (toggleBtn.checked) {
+        // Check section 2
+        const start2 = new Date(document.getElementById('from_date1').value + 'T' + document.getElementById('from_time1').value);
+        const end2 = new Date(document.getElementById('to_date1').value + 'T' + document.getElementById('to_time1').value);
+        if (end2 <= start2) { showMsg("❌ Error: End must be AFTER Start (P2)", false); return; }
+
         payload.From_2 = getReadableDateTime("from_date1", "from_time1");
         payload.To_2 = getReadableDateTime("to_date1", "to_time1");
         payload.Message_2 = document.getElementById("messageValue1")?.value || "";
     } else {
-        payload.From_2 = ""; payload.To_2 = ""; payload.Message_2 = "";
+        // Toggle OFF : check if section 2 is in the past
+        const oldEndDate2 = parseDataTableDate(row.To_2);
+        const now = new Date();
+        if (oldEndDate2 && oldEndDate2 < now) {
+            // Clear the data if statement is true
+            payload.From_2 = "";
+            payload.To_2 = "";
+            payload.Message_2 = "";
+        }
+        // If not true data stays as is
     }
 
     try {
