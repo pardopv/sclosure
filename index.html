@@ -350,7 +350,7 @@ document.getElementById("form").addEventListener("submit", async (e) => {
     const end1 = new Date(document.getElementById('to_date').value + 'T' + document.getElementById('to_time').value);
 
     if (end1 <= start1) {
-        showMsg("❌ Error: End date/time must be AFTER Start date/time (Period 1)", false);
+        showMsg("❌ Error: End date/time must be AFTER Start date/time (Message 1)", false);
         return;
     }
 
@@ -358,7 +358,7 @@ document.getElementById("form").addEventListener("submit", async (e) => {
         const start2 = new Date(document.getElementById('from_date1').value + 'T' + document.getElementById('from_time1').value);
         const end2 = new Date(document.getElementById('to_date1').value + 'T' + document.getElementById('to_time1').value);
         if (end2 <= start2) {
-            showMsg("❌ Error: End date/time must be AFTER Start date/time (Period 2)", false);
+            showMsg("❌ Error: End date/time must be AFTER Start date/time (Message 2)", false);
             return;
         }
     }
