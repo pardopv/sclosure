@@ -40,8 +40,8 @@
     .closure-info b { color: #0B0B60; font-size: 0.9rem; }
     .closure-dates { font-size: 0.75rem; color: #666; margin-top: 2px; line-height: 1.4; }
     .badge { padding: 2px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: bold; color: white; text-transform: uppercase; }
-    .badge-now { background: #28a745; }
-    .badge-next { background: #0059ff; }
+    .badge-active { background: #28a745; }
+    .badge-scheduled { background: #0059ff; }
 </style>
 </head>
 <body>
@@ -288,7 +288,7 @@ ROWS.forEach(row => {
                             <div class="closure-dates">${p.start} ➔ ${p.end}</div>
                             <div class="closure-message">🔊 Prompt: ${p.msg || 'None'}</div>
                         </div>
-                        <span class="badge ${isActive ? 'badge-now' : 'badge-next'}">${isActive ? 'Now' : 'Next'}</span>
+                        <span class="badge ${isActive ? 'badge-active' : 'badge-scheduled'}">${isActive ? 'Active' : 'Scheduled'}</span>
                     </div>`;
             }
         }
